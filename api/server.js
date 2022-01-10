@@ -8,10 +8,13 @@ server.post('/api/users', (req, res) => {
     const { name, bio } = req.body
     User.insert({ name, bio })
     .then(newUser => {
-        !newUser ? res.status(400).json({ message: "Please provide name and bio for the user" }) : res.status(201).json(newUser)
+        !newUser.name || !newUser.bio  
+        ? res.status(400).json({ message: "Please provide name and bio for the user" })
+        : res.status(201).json(newUser) 
+        
     })
    .catch(err => {
-        res.status(500).json({ message: err.message })
+        res.status(500).json({ message: "There was an error while saving the user to the database" })
     })
 })
 
