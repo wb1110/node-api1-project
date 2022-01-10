@@ -49,9 +49,10 @@ server.delete('/api/users/:id', (req, res) => {
 
 server.put('/api/users/:id', (req, res) => {
     const { id } = req.params
-    User.update(id, changes)
-    .then(user => {
-        user ? res.status(200).json(user) : res.status(404).json({ message: "no user" })
+    const { name, bio  } = req.body
+    User.update( id, { name, bio } )
+    .then(updatedUser => {
+        updatedUser ? res.status(200).json(updatedUser) : res.status(404).json({ message: "no user" })
     })
    .catch(err => {
         res.status(500).json({ message: err.message })
