@@ -32,10 +32,10 @@ server.get('/api/users/:id', (req, res) => {
     const { id } = req.params
     User.findById(id)
     .then(user => {
-        user ? res.status(200).json(user) : res.status(404).json({ message: "no user" })
+        user ? res.status(200).json(user) : res.status(404).json({ message: "The user with the specified ID does not exist" })
     })
    .catch(err => {
-        res.status(500).json({ message: err.message })
+        res.status(500).json({ message: "The users information could not be retrieved" })
     })
 })
 
@@ -43,10 +43,10 @@ server.delete('/api/users/:id', (req, res) => {
     const { id } = req.params
     User.remove(id)
     .then(deletedUser => {
-        !deletedUser ? res.status(404).json({ message: "User has been deleted"}) : res.status(200).json(deletedUser) 
+        !deletedUser ? res.status(404).json({ message: "The user with the specified ID does not exist"}) : res.status(200).json(deletedUser) 
     })
    .catch(err => {
-        res.status(500).json({ message: err.message })
+        res.status(500).json({ message: "The user could not be removed" })
     })
 })
 
@@ -55,10 +55,17 @@ server.put('/api/users/:id', (req, res) => {
     const { name, bio  } = req.body
     User.update( id, { name, bio } )
     .then(updatedUser => {
-        updatedUser ? res.status(200).json(updatedUser) : res.status(404).json({ message: "no user" })
-    })
+        if (!updatedUser) {
+            res.status(404).json({ message: "The user with the specified ID does not exist" })
+        } else {
+            if (!req.body.name || !req.body.bio) {
+            res.status(400).json({ message: "Please provide name and bio for the user" })
+        } else {
+            res.status(200).json(updatedUser) 
+        }
+    }})
    .catch(err => {
-        res.status(500).json({ message: err.message })
+        res.status(500).json({ message: "The user information could not be modified" })
     })
 })
 
