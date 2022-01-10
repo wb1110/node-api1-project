@@ -39,8 +39,8 @@ server.get('/api/users/:id', (req, res) => {
 server.delete('/api/users/:id', (req, res) => {
     const { id } = req.params
     User.remove(id)
-    .then(user => {
-        user ? res.status(200).json(user) : res.status(404).json({ message: "no user" })
+    .then(deletedUser => {
+        !deletedUser ? res.status(404).json({ message: "User has been deleted"}) : res.status(200).json(deletedUser) 
     })
    .catch(err => {
         res.status(500).json({ message: err.message })
